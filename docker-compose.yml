@@ -1,0 +1,92 @@
+# ! Docker-Compose Specification
+version: "3.8"
+
+# ! Define Project Network
+networks:
+  StackName:
+
+# ? App Stack
+services:
+  # ? Bring up Nginx After Backend and Link Volumes
+  webserver:
+    image: nginx:1.19.6-alpine
+    container_name: webserver
+    restart: unless-stopped
+    ports:
+      - "${HTTP_PORT}"
+      - "${HTTPS_PORT}"
+    volumes:
+      - ./server/:/etc/nginx/conf.d
+    networks:
+      - StackName
+
+  # ? Bring up Mysql and configure the Database
+  database:
+    image: mysql:8.0.21
+    container_name: database
+    restart: unless-stopped
+    tty: true
+    expose:
+      - "3306"
+    environment:
+      MYSQL_DATABASE: "${DB_DATABASE}"
+      MYSQL_USER: "${DB_USERNAME}"
+      MYSQL_PASSWORD: "${DB_PASSWORD}"
+      MYSQL_ROOT_PASSWORD: "${DB_ROOT_PASSWORD}"
+      SERVICE_TAG: dev
+      SERVICE_NAME: database
+    volumes:
+      - ./storage/database:/var/lib/mysql
+    networks:
+      - StackName
+
+  # ? Build, Bring up Backend Container
+  backend:
+    build:
+      context: .
+      dockerfile: tools/dockerfiles/dev-images/backend.dockerfile
+    container_name: backend
+    volumes:
+      - ./:/var/www/html
+      - ./server/config/php.ini:/usr/local/etc/php/php.ini
+      - ./server/config/www.conf:/usr/local/etc/php-fpm.d/www.conf
+    expose:
+      - "9000"
+    depends_on:
+      - database
+      - cache
+    networks:
+      - StackName
+
+  # ? Bring Up Client UI
+  client:
+    build:
+      context: .
+      dockerfile: tools/dockerfiles/dev-images/client.dockerfile
+    container_name: client
+    volumes:
+      - ./client/:/var/www/client
+    expose:
+      - "8080"
+    networks:
+      - StackName
+
+  # ? Bring Up Caching Layer
+  cache:
+    image: redis:6.0.9
+    container_name: cache
+    expose:
+      - "6379"
+    networks:
+      - StackName
+
+  # * Helper Container for Serving the Front-end
+  npm:
+    image: node:14
+    container_name: npm
+    volumes:
+      - ./client:/var/www/client
+    working_dir: /var/www/client
+    entrypoint: ["npm"]
+    networks:
+      - StackName
