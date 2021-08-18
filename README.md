@@ -38,7 +38,7 @@ Rather than go through all the hassle of installing php/composer and running the
 ```javascript
 curl -s https://laravel.build/folder-name | bash
 ```
-Notice: `Change folder-name in the command with any folder name you'd like`<br/>
+※**Notice**: `Change folder-name in the command with any folder name you'd like`<br/>
 Lets delete the package.json file in the root directory since we are not gonna be using it
 
 # Folder Structure
@@ -147,10 +147,9 @@ those are the images we'll need for now
 whether or not you want to change something in `php.ini` or `www.conf` you should at least have them exposed in case you wanna edit them later
 we'll do that by creating them and linking them inside the containers
 
-in `server/config` create `php.ini` & `www.conf` files and paste the following gist content accordingly
-
-* [php.ini](https://gist.github.com/aeweda/b169a48d9c885e22ff19b43baa359c78)
-* [www.conf](https://gist.github.com/aeweda/e216e6a676d3a9b3dfe4fd5653c854a4)
+in `server/config` create `php.ini` & `www.conf` files
+* php.ini
+* www.conf
 
 # nginx Config
 We are going to need a self signed certificate, inside the project's root directory run the following command
@@ -288,7 +287,6 @@ server
     location / {
         return 301 https://localhost$request_uri;
     }
-
 }
 ```
 
@@ -837,6 +835,6 @@ and he's up and running
 We've successfully create an easy to use development stack that starts up by simply cloning and running ./init.sh, a small pseudo helper cli that helps developers interact with the with the containers
 
 If you understand everything and would just like a repo that has all this instead of going through all this as a learning experience
-you can find it [here](https://github.com/aeweda/Laravel-Development-Stack-Boilerplate)
+you can find it [here](https://github.com/viethc/Laravel-Vue-Docker)
 
 if you find any typos or any problems in the process or having some comments about something that you don't like please let me know so that I can fix it or improve upon it, whichever the case may be
