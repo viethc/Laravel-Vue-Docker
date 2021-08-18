@@ -1,14 +1,10 @@
 # Laravel-Vue-Docker
 _Create a Laravel &amp; Vue Front-end Development Stack_
 
-1.Introduction
-2.Requirements
-
-
-### Introduction
+# Introduction
 The purpose of this guide is to make your application as easy as possible to self deploy on the developers side without them bothering with installing mysql, nginx, and a ton of stuff just to start doing what they do best.
 
-### Requirements
+# Requirements
 Before we start, we're gonna need a few dependencies to get this project underway
 
 > Docker<br>
